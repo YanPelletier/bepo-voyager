@@ -518,7 +518,36 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
-        case BP_A ... BP_Z:
+        case BP_A:
+        case BP_B:
+        case BP_C:
+        case BP_D:
+        case BP_E:
+        case BP_F:
+        case BP_G:
+        case BP_H:
+        case BP_I:
+        case BP_J:
+        case BP_K:
+        case BP_L:
+        case BP_M:
+        case BP_N:
+        case BP_O:
+        case BP_P:
+        case BP_Q:
+        case BP_R:
+        case BP_S:
+        case BP_T:
+        case BP_U:
+        case BP_V:
+        case BP_W:
+        case BP_X:
+        case BP_Y:
+        case BP_Z:
+        case BP_ECUT:
+        case BP_EGRV:		
+        case BP_CCED:		
+        case BP_AGRV:		
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
 
