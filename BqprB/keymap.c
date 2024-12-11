@@ -519,20 +519,6 @@ bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case BP_A ... BP_Z:
-        case BP_DQOT:
-        case BP_LGIL:
-        case BP_RGIL:
-        case BP_LPRN:
-        case BP_RPRN:
-        case BP_AT:
-        case BP_PLUS:
-        case BP_MINS:
-        case BP_SLSH:
-        case BP_ASTR:
-        case BP_ECUT:
-        case BP_EGRV:
-        case BP_CCED:
-        case BP_AGRV:
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
 
