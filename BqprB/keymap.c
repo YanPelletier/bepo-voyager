@@ -520,7 +520,7 @@ bool caps_word_press_user(uint16_t keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case BP_A:
         case BP_B:
-        case BP_C:
+        case TD(DANCE_6):
         case BP_D:
         case BP_E:
         case BP_F:
