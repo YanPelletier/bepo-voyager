@@ -520,8 +520,10 @@ bool caps_word_press_user(uint16_t keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case BP_A:
         case BP_B:
+        case BP_C:
         case TD(DANCE_6):
         case BP_D:
+	case TD(DANCE_4):
         case BP_E:
         case BP_F:
         case BP_G:
@@ -540,10 +542,13 @@ bool caps_word_press_user(uint16_t keycode) {
         case BP_T:
         case BP_U:
         case BP_V:
+	case TD(DANCE_3):
         case BP_W:
         case BP_X:
+	case TD(DANCE_2):
         case BP_Y:
         case BP_Z:
+	case TD(DANCE_5):
         case BP_ECUT:
         case BP_EGRV:		
         case BP_CCED:		
