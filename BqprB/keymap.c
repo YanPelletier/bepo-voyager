@@ -522,6 +522,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case BP_B:
         case BP_C:
         case TD(DANCE_6):
+	case TD(DANCE_1):
         case BP_D:
 	case TD(DANCE_4):
         case BP_E:
@@ -552,13 +553,22 @@ bool caps_word_press_user(uint16_t keycode) {
         case BP_ECUT:
         case BP_EGRV:		
         case BP_CCED:		
-        case BP_AGRV:		
+        case BP_AGRV:	
+        case BP_DQOT:	
+        case BP_LGIL:	
+        case BP_RGIL:	
+        case BP_LPRN:	
+        case BP_RPRN:	
+        case BP_AT:	
+        case BP_PLUS:	
+        case BP_MINS:	
+        case BP_SLSH:	
+        case BP_ASTR:	
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
 
         // Keycodes that continue Caps Word, without shifting.
         case BP_DCRC:
-        case KC_1 ... KC_0:
         case KC_BSPC:
         case KC_DEL:
         case KC_UNDS:
