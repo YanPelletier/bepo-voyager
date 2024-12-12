@@ -4,6 +4,16 @@
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
 
+
+
+#define DM_REC1 KC_F16
+#define DM_PLY1 KC_F17
+#define DM_RSTP KC_F18
+#define DM_REC2 KC_F19
+#define DM_PLY2 KC_F20
+
+
+
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   HSV_0_236_141,
