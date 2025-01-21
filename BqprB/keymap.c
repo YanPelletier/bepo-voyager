@@ -70,16 +70,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
-const uint16_t PROGMEM combo0[] = { MT(MOD_LSFT, BP_E), MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MT(MOD_LCTL, BP_I), COMBO_END};
-const uint16_t PROGMEM combo1[] = { BP_EQL, BP_ASTR, BP_SLSH, COMBO_END};
-const uint16_t PROGMEM combo2[] = { MEH_T(KC_SPACE), MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MT(MOD_LALT, BP_R), MT(MOD_RGUI, BP_N), COMBO_END};
-const uint16_t PROGMEM combo3[] = { MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MEH_T(KC_SPACE), COMBO_END};
+const uint16_t PROGMEM combo0[] = { BP_EQL, BP_ASTR, BP_SLSH, COMBO_END};
+const uint16_t PROGMEM combo1[] = { MEH_T(KC_SPACE), MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MT(MOD_LALT, BP_R), MT(MOD_RGUI, BP_N), COMBO_END};
+const uint16_t PROGMEM combo2[] = { MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MEH_T(KC_SPACE), COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    COMBO(combo0, KC_CAPS),
-    COMBO(combo1, TO(5)),
-    COMBO(combo2, KC_F24),
-    COMBO(combo3, KC_F23),
+    COMBO(combo0, TO(5)),
+    COMBO(combo1, KC_F24),
+    COMBO(combo2, KC_F23),
 };
 
 
