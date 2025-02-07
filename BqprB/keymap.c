@@ -77,9 +77,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                     KC_NO,          KC_NO,                                          KC_NO,          KC_NO
   ),
   [5] = LAYOUT_voyager(
-    TO(0),          TD(DANCE_7),    TD(DANCE_8),    TD(DANCE_9),    TD(DANCE_10),   TD(DANCE_11),                                   TD(DANCE_16),   TD(DANCE_17),   TD(DANCE_18),   TD(DANCE_19),   TD(DANCE_20),   TD(DANCE_21),   
+    KC_ESCAPE,      TD(DANCE_7),    TD(DANCE_8),    TD(DANCE_9),    TD(DANCE_10),   TD(DANCE_11),                                   TD(DANCE_16),   TD(DANCE_17),   TD(DANCE_18),   TD(DANCE_19),   TD(DANCE_20),   TD(DANCE_21),   
     KC_TAB,         KC_B,           FRCA_16,        KC_P,           KC_O,           FRCA_13,                                        FRCA_15,        KC_V,           KC_D,           KC_L,           KC_J,           TD(DANCE_22),   
-    BP_CCED,        MT(MOD_LGUI, KC_A),MT(MOD_LALT, KC_U),MT(MOD_LCTL, KC_I),MT(MOD_LSFT, KC_E),KC_COMMA,                                       KC_C,           MT(MOD_RSFT, KC_T),MT(MOD_RCTL, KC_S),MT(MOD_RALT, KC_R),MT(MOD_RGUI, KC_N),KC_M,           
+    FRCA_12,        MT(MOD_LGUI, KC_A),MT(MOD_LALT, KC_U),MT(MOD_LCTL, KC_I),MT(MOD_LSFT, KC_E),KC_COMMA,                                       KC_C,           MT(MOD_RSFT, KC_T),MT(MOD_RCTL, KC_S),MT(MOD_RALT, KC_R),MT(MOD_RGUI, KC_N),KC_M,           
     TD(DANCE_12),   TD(DANCE_13),   TD(DANCE_14),   TD(DANCE_15),   KC_DOT,         KC_K,                                           KC_QUOTE,       KC_Q,           KC_G,           KC_H,           KC_F,           KC_W,           
                                                     KC_BSPC,        KC_ENTER,                                       OSM(MOD_RALT),  MEH_T(KC_SPACE)
   ),
@@ -88,11 +88,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM combo0[] = { BP_EQL, BP_ASTR, BP_SLSH, COMBO_END};
 const uint16_t PROGMEM combo1[] = { MEH_T(KC_SPACE), MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MT(MOD_LALT, BP_R), MT(MOD_RGUI, BP_N), COMBO_END};
 const uint16_t PROGMEM combo2[] = { MT(MOD_RSFT, BP_T), MT(MOD_RCTL, BP_S), MEH_T(KC_SPACE), COMBO_END};
+const uint16_t PROGMEM combo3[] = { TD(DANCE_0), TD(DANCE_0), TD(DANCE_0), COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     COMBO(combo0, TO(5)),
     COMBO(combo1, KC_F24),
     COMBO(combo2, KC_F23),
+    COMBO(combo3, TO(0)),
 };
 
 
@@ -113,7 +115,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
 
     [4] = { {163,246,143}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {31,218,204}, {31,218,204}, {31,218,204}, {31,218,204}, {0,0,0}, {0,0,0}, {0,236,141}, {90,248,81}, {163,245,128}, {31,218,204}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {31,218,204}, {31,218,204}, {31,218,204}, {31,218,204}, {0,0,0}, {0,0,0}, {31,218,204}, {31,218,204}, {31,218,204}, {31,218,204}, {0,0,0}, {0,0,0}, {0,0,0} },
 
-    [5] = { {163,246,143}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255} },
+    [5] = { {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255}, {0,255,255} },
 
 };
 
@@ -322,7 +324,7 @@ void dance_2_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[2].step = dance_step(state);
     switch (dance_state[2].step) {
         case SINGLE_TAP: register_code16(BP_X); break;
-        case SINGLE_HOLD: register_code16(LCTL(BP_X)); break;
+        case SINGLE_HOLD: register_code16(LSFT(KC_DELETE)); break;
         case DOUBLE_TAP: register_code16(BP_X); register_code16(BP_X); break;
         case DOUBLE_SINGLE_TAP: tap_code16(BP_X); register_code16(BP_X);
     }
@@ -332,7 +334,7 @@ void dance_2_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[2].step) {
         case SINGLE_TAP: unregister_code16(BP_X); break;
-        case SINGLE_HOLD: unregister_code16(LCTL(BP_X)); break;
+        case SINGLE_HOLD: unregister_code16(LSFT(KC_DELETE)); break;
         case DOUBLE_TAP: unregister_code16(BP_X); break;
         case DOUBLE_SINGLE_TAP: unregister_code16(BP_X); break;
     }
@@ -357,7 +359,7 @@ void dance_3_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[3].step = dance_step(state);
     switch (dance_state[3].step) {
         case SINGLE_TAP: register_code16(BP_V); break;
-        case SINGLE_HOLD: register_code16(LCTL(BP_V)); break;
+        case SINGLE_HOLD: register_code16(LSFT(KC_INSERT)); break;
         case DOUBLE_TAP: register_code16(BP_V); register_code16(BP_V); break;
         case DOUBLE_SINGLE_TAP: tap_code16(BP_V); register_code16(BP_V);
     }
@@ -367,7 +369,7 @@ void dance_3_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[3].step) {
         case SINGLE_TAP: unregister_code16(BP_V); break;
-        case SINGLE_HOLD: unregister_code16(LCTL(BP_V)); break;
+        case SINGLE_HOLD: unregister_code16(LSFT(KC_INSERT)); break;
         case DOUBLE_TAP: unregister_code16(BP_V); break;
         case DOUBLE_SINGLE_TAP: unregister_code16(BP_V); break;
     }
@@ -461,7 +463,7 @@ void dance_6_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[6].step = dance_step(state);
     switch (dance_state[6].step) {
         case SINGLE_TAP: register_code16(BP_C); break;
-        case SINGLE_HOLD: register_code16(LCTL(BP_C)); break;
+        case SINGLE_HOLD: register_code16(LCTL(KC_INSERT)); break;
         case DOUBLE_TAP: register_code16(BP_C); register_code16(BP_C); break;
         case DOUBLE_SINGLE_TAP: tap_code16(BP_C); register_code16(BP_C);
     }
@@ -471,7 +473,7 @@ void dance_6_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[6].step) {
         case SINGLE_TAP: unregister_code16(BP_C); break;
-        case SINGLE_HOLD: unregister_code16(LCTL(BP_C)); break;
+        case SINGLE_HOLD: unregister_code16(LCTL(KC_INSERT)); break;
         case DOUBLE_TAP: unregister_code16(BP_C); break;
         case DOUBLE_SINGLE_TAP: unregister_code16(BP_C); break;
     }
