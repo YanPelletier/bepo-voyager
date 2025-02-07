@@ -47,5 +47,6 @@
 #define BP_W KC_RBRC
 #define FRCA_16 KC_SLASH
 #define FRCA_13 KC_QUOTE
+#define FRCA_12 KC_RBRC
 #define BP_DEGR S(KC_MINS)
 #define FRCA_15 KC_LBRC
