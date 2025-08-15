@@ -582,10 +582,10 @@ bool caps_word_press_user(uint16_t keycode) {
          case BP_A:
          case BP_B:
          case BP_C:
-         case TD(DANCE_6):
- 	case TD(DANCE_1):
+         case TD(DUAL_FUNC_6):
+         case TD(DUAL_FUNC_1):
          case BP_D:
- 	case TD(DANCE_4):
+ 	     case TD(DUAL_FUNC_4):
          case BP_E:
          case BP_F:
          case BP_G:
@@ -604,13 +604,13 @@ bool caps_word_press_user(uint16_t keycode) {
          case BP_T:
          case BP_U:
          case BP_V:
- 	case TD(DANCE_3):
+ 	     case TD(DUAL_FUNC_3):
          case BP_W:
          case BP_X:
- 	case TD(DANCE_2):
+ 	     case TD(DUAL_FUNC_2):
          case BP_Y:
          case BP_Z:
- 	case TD(DANCE_5):
+ 	     case TD(DUAL_FUNC_5):
          case BP_ECUT:
          case BP_EGRV:		
          case BP_CCED:		
