@@ -567,3 +567,75 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 
+// Custom QMK here
+
+// SHIFT-BACKSPACE = DELETE
+const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+// This globally defines all key overrides to be used
+const key_override_t **key_overrides = (const key_override_t *[]){
+	&delete_key_override
+};
+
+bool caps_word_press_user(uint16_t keycode) {
+     switch (keycode) {
+         // Keycodes that continue Caps Word, with shift applied.
+         case BP_A:
+         case BP_B:
+         case BP_C:
+         case TD(DANCE_6):
+ 	case TD(DANCE_1):
+         case BP_D:
+ 	case TD(DANCE_4):
+         case BP_E:
+         case BP_F:
+         case BP_G:
+         case BP_H:
+         case BP_I:
+         case BP_J:
+         case BP_K:
+         case BP_L:
+         case BP_M:
+         case BP_N:
+         case BP_O:
+         case BP_P:
+         case BP_Q:
+         case BP_R:
+         case BP_S:
+         case BP_T:
+         case BP_U:
+         case BP_V:
+ 	case TD(DANCE_3):
+         case BP_W:
+         case BP_X:
+ 	case TD(DANCE_2):
+         case BP_Y:
+         case BP_Z:
+ 	case TD(DANCE_5):
+         case BP_ECUT:
+         case BP_EGRV:		
+         case BP_CCED:		
+         case BP_AGRV:	
+         case BP_DQOT:	
+         case BP_LGIL:	
+         case BP_RGIL:	
+         case BP_LPRN:	
+         case BP_RPRN:	
+         case BP_AT:	
+         case BP_PLUS:	
+         case BP_MINS:	
+         case BP_SLSH:	
+         case BP_ASTR:	
+             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+             return true;
+ 
+         // Keycodes that continue Caps Word, without shifting.
+         case BP_DCRC:
+         case KC_BSPC:
+         case KC_DEL:
+         case KC_UNDS:
+             return true;
+ 
+         default:
+             return false;  // Deactivate Caps Word.
+     }
+ }
