@@ -607,7 +607,6 @@ bool caps_word_press_user(uint16_t keycode) {
  	     case TD(DUAL_FUNC_3):
          case BP_W:
          case BP_X:
- 	     case TD(DUAL_FUNC_2):
          case BP_Y:
          case BP_Z:
  	     case TD(DUAL_FUNC_5):
