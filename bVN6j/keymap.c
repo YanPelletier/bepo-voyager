@@ -685,7 +685,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case BP_6: case BP_7: case BP_8: case BP_9: case BP_0:
         // Chiffres couche numérique (keycodes de base)
         case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
-        case KC_6: case KC_7: case KC_8: case KC_9: case KC_0:
+        case KC_6: case KC_7: case KC_9: case KC_0:
             return true;  // continue le mot, sans ajouter Shift
 
         // Tiret BÉPO (BP_MINS = KC_8 sans shift = '-')
