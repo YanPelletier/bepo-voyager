@@ -64,3 +64,7 @@
 #define BP_0 S(KC_0)
 #define BP_DEGR S(KC_MINS)
 #define BP_CIRC ALGR(KC_6)
+
+
+
+// Custom modifications starts here
