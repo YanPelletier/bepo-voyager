@@ -661,44 +661,60 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // Custom modifications starts here
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
-        // Lettres BÉPO — on applique Shift (majuscule)
-        case BP_A: case BP_B: case BP_C: case BP_D:
-        case BP_E: case BP_F: case BP_G: case BP_H:
-        case BP_I: case BP_J: case BP_K: case BP_L:
-        case BP_M: case BP_N: case BP_O: case BP_P:
-        case BP_Q: case BP_R: case BP_S: case BP_T:
-        case BP_U: case BP_V: case BP_W: case BP_X:
-        case BP_Y: case BP_Z:
-        // Accentués BÉPO
-        case BP_ECUT:  // é
-        case BP_EGRV:  // è
-        case BP_AGRV:  // à
-        case BP_CCED:  // ç
-        case BP_DCRC:  // ^ (dead circumflex, pour ê/î/ô/û/â)
+        // Toutes les lettres BÉPO par leur valeur KC_ réelle
+        case KC_A:    // BP_A
+        case KC_B:    // BP_K
+        case KC_C:    // BP_X
+        case KC_D:    // BP_I
+        case KC_E:    // BP_P
+        case KC_F:    // BP_E
+        case KC_G:    // BP_COMM (virgule — termine le mot, pas ici)
+        // KC_G intentionnellement absent : virgule termine Caps Word
+        case KC_H:    // BP_C
+        case KC_I:    // BP_D
+        case KC_J:    // BP_T
+        case KC_K:    // BP_S
+        case KC_L:    // BP_R
+        case KC_M:    // BP_Q
+        case KC_N:    // BP_APOS
+        case KC_O:    // BP_L
+        case KC_P:    // BP_J
+        case KC_Q:    // BP_B
+        case KC_R:    // BP_O
+        case KC_S:    // BP_U
+        case KC_T:    // BP_EGRV (è)
+        case KC_U:    // BP_V
+        case KC_V:    // BP_DOT (point — termine le mot, pas ici)
+        // KC_V intentionnellement absent : point termine Caps Word
+        case KC_W:    // BP_ECUT (é)
+        case KC_X:    // BP_Y
+        case KC_Y:    // BP_DCRC (^ dead)
+        case KC_Z:    // BP_AGRV (à)
+        case KC_BSLS: // BP_CCED (ç)
+        case KC_LBRC: // BP_Z
+        case KC_RBRC: // BP_W
+        case KC_QUOT: // BP_M
+        case KC_SCLN: // BP_N
+        case KC_SLSH: // BP_F
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Chiffres BÉPO — on laisse passer sans Shift
-        // BP_1..BP_0 sont déjà S(KC_x), on les laisse continuer le mot
-        // sans ajouter de Shift supplémentaire
-        case BP_1: case BP_2: case BP_3: case BP_4: case BP_5:
-        case BP_6: case BP_7: case BP_8: case BP_9: case BP_0:
-        // Chiffres couche numérique (keycodes de base)
+        // Tiret → underscore
+        case KC_8:    // BP_MINS
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+
+        // Chiffres — continuent sans shift
+        // BP_1..BP_9 sont S(KC_1)..S(KC_9), QMK les voit comme QK_MODS
+        // On laisse passer les KC_ bruts des chiffres
         case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
         case KC_6: case KC_7: case KC_9: case KC_0:
-            return true;  // continue le mot, sans ajouter Shift
-
-        // Tiret BÉPO (BP_MINS = KC_8 sans shift = '-')
-        // On veut que Caps Word le shifte → donne '_' (BP_8 = S(KC_8))
-        case BP_MINS:
-            add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Backspace continue le mot (pour corriger des typos)
         case KC_BSPC:
             return true;
 
         default:
-            return false;  // tout autre keycode termine Caps Word
+            return false;
     }
 }
