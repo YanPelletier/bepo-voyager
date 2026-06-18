@@ -660,41 +660,50 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Custom modifications starts here
 bool caps_word_press_user(uint16_t keycode) {
-    // Strip mod-tap et layer-tap → garder seulement le tap keycode
+    // Strip mod-tap et layer-tap → tap keycode brut
     if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX) ||
         (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
         keycode = keycode & 0xFF;
     }
 
     switch (keycode) {
-        case KC_A: case KC_B: case KC_C: case KC_D:
-        case KC_E: case KC_F:
-        case KC_H: case KC_I: case KC_J: case KC_K:
-        case KC_L: case KC_M: case KC_O: case KC_P:
-        case KC_Q: case KC_R: case KC_S: case KC_T:
-        case KC_U:
-        case KC_W: case KC_X: case KC_Y: case KC_Z:
-        case KC_BSLS: // BP_CCED (ç)
-        case KC_LBRC: // BP_Z
-        case KC_RBRC: // BP_W
-        case KC_QUOT: // BP_M
-        case KC_SCLN: // BP_N
-        case KC_SLSH: // BP_F
-            add_weak_mods(MOD_BIT(KC_LSFT));
-            return true;
-
-        case KC_8:    // BP_MINS → _
-            add_weak_mods(MOD_BIT(KC_LSFT));
-            return true;
-
+        // Chiffres — continuent sans shift
         case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
         case KC_6: case KC_7: case KC_9: case KC_0:
             return true;
 
+        // Tiret (BP_MINS) → underscore avec shift
+        case KC_8:
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+
+        // Backspace — continue pour corriger
         case KC_BSPC:
             return true;
 
+        // Séparateurs — terminent le mot
+        case KC_SPACE:
+        case KC_ENTER:
+        case KC_TAB:
+        case KC_ESCAPE:
+        case KC_DOT:   // BP_H  (.)
+        case KC_COMM:  // BP_G  (,)
+            return false;
+
+        // Modificateurs seuls — ne terminent pas
+        case KC_LSFT: case KC_RSFT:
+        case KC_LCTL: case KC_RCTL:
+        case KC_LALT: case KC_RALT:
+        case KC_LGUI: case KC_RGUI:
+            return true;
+
         default:
+            // Tout keycode basic continue avec shift (lettres, accentués, etc.)
+            if (keycode < 0x100) {
+                add_weak_mods(MOD_BIT(KC_LSFT));
+                return true;
+            }
+            // QK_MODS et autres keycodes complexes terminent
             return false;
     }
 }
