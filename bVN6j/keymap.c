@@ -659,3 +659,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
+
+// Caps Word: toggle by holding both shift keys simultaneously
+// All BÉPO letters are uppercased; - (BP_MINS) becomes _
+
+static bool last_both_shifts = false;
+
+void matrix_scan_user(void) {
+    uint8_t mods = get_mods();
+    bool both_shifts = (mods & MOD_MASK_SHIFT) == MOD_MASK_SHIFT;
+
+    if (both_shifts && !last_both_shifts) {
+        caps_word_toggle();
+        del_mods(MOD_MASK_SHIFT);
+        send_keyboard_report();
+    }
+
+    last_both_shifts = both_shifts;
+}
+
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        case KC_A ... KC_Z:
+        case KC_BSLS:   // BP_CCED → ç/Ç
+        case KC_LBRC:   // BP_Z → z/Z
+        case KC_SCLN:   // BP_N → n/N
+        case KC_QUOT:   // BP_M → m/M
+        case KC_COMM:   // BP_G → g/G
+        case KC_DOT:    // BP_H → h/H
+        case KC_SLSH:   // BP_F → f/F
+        case KC_RBRC:   // BP_W → w/W
+        case KC_8:      // BP_MINS → -/_ (underscore when shifted by Caps Word)
+            return true;
+        default:
+            return false;
+    }
+}
