@@ -660,36 +660,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Custom modifications starts here
 bool caps_word_press_user(uint16_t keycode) {
+    // Strip mod-tap et layer-tap → garder seulement le tap keycode
+    if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX) ||
+        (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
+        keycode = keycode & 0xFF;
+    }
+
     switch (keycode) {
-        // Toutes les lettres BÉPO par leur valeur KC_ réelle
-        case KC_A:    // BP_A
-        case KC_B:    // BP_K
-        case KC_C:    // BP_X
-        case KC_D:    // BP_I
-        case KC_E:    // BP_P
-        case KC_F:    // BP_E
-        case KC_G:    // BP_COMM (virgule — termine le mot, pas ici)
-        // KC_G intentionnellement absent : virgule termine Caps Word
-        case KC_H:    // BP_C
-        case KC_I:    // BP_D
-        case KC_J:    // BP_T
-        case KC_K:    // BP_S
-        case KC_L:    // BP_R
-        case KC_M:    // BP_Q
-        case KC_N:    // BP_APOS
-        case KC_O:    // BP_L
-        case KC_P:    // BP_J
-        case KC_Q:    // BP_B
-        case KC_R:    // BP_O
-        case KC_S:    // BP_U
-        case KC_T:    // BP_EGRV (è)
-        case KC_U:    // BP_V
-        case KC_V:    // BP_DOT (point — termine le mot, pas ici)
-        // KC_V intentionnellement absent : point termine Caps Word
-        case KC_W:    // BP_ECUT (é)
-        case KC_X:    // BP_Y
-        case KC_Y:    // BP_DCRC (^ dead)
-        case KC_Z:    // BP_AGRV (à)
+        case KC_A: case KC_B: case KC_C: case KC_D:
+        case KC_E: case KC_F:
+        case KC_H: case KC_I: case KC_J: case KC_K:
+        case KC_L: case KC_M: case KC_O: case KC_P:
+        case KC_Q: case KC_R: case KC_S: case KC_T:
+        case KC_U:
+        case KC_W: case KC_X: case KC_Y: case KC_Z:
         case KC_BSLS: // BP_CCED (ç)
         case KC_LBRC: // BP_Z
         case KC_RBRC: // BP_W
@@ -699,14 +683,10 @@ bool caps_word_press_user(uint16_t keycode) {
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Tiret → underscore
-        case KC_8:    // BP_MINS
+        case KC_8:    // BP_MINS → _
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Chiffres — continuent sans shift
-        // BP_1..BP_9 sont S(KC_1)..S(KC_9), QMK les voit comme QK_MODS
-        // On laisse passer les KC_ bruts des chiffres
         case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
         case KC_6: case KC_7: case KC_9: case KC_0:
             return true;
