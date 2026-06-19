@@ -661,6 +661,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // Custom modifications starts here
 
 static bool my_caps_word_active = false;
+static bool both_shifts_pressed = false;
 
 static bool is_bepo_letter(uint16_t kc) {
     switch (kc) {
@@ -689,32 +690,28 @@ static bool is_word_terminator(uint16_t kc) {
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    static uint16_t last_shift_time = 0;
-    static bool     last_was_shift  = false;
-
-    if (!record->event.pressed) return;
-
     uint16_t raw = keycode;
     if ((raw >= QK_MOD_TAP   && raw <= QK_MOD_TAP_MAX) ||
         (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
         raw = raw & 0xFF;
     }
 
-    // Détection double-shift
-    bool is_shift = (raw == KC_LSFT || raw == KC_RSFT);
-    if (is_shift) {
-        uint16_t now = timer_read();
-        if (last_was_shift && (now - last_shift_time) < TAPPING_TERM) {
-            my_caps_word_active = !my_caps_word_active;
-            last_was_shift = false;
-            return;
-        }
-        last_shift_time = now;
-        last_was_shift  = true;
-        return;
-    }
-    last_was_shift = false;
+    // Détection des deux shifts simultanés via get_mods()
+    uint8_t mods = get_mods();
+    bool left_shift  = (mods & MOD_BIT(KC_LSFT)) != 0;
+    bool right_shift = (mods & MOD_BIT(KC_RSFT)) != 0;
 
+    if (left_shift && right_shift) {
+        if (!both_shifts_pressed) {
+            both_shifts_pressed = true;
+            my_caps_word_active = !my_caps_word_active;
+        }
+        return;
+    } else {
+        both_shifts_pressed = false;
+    }
+
+    if (!record->event.pressed) return;
     if (!my_caps_word_active) return;
 
     // Terminateurs
@@ -723,7 +720,7 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
         return;
     }
 
-    // Backspace et chiffres — laisser passer tel quel
+    // Backspace et chiffres — laisser passer
     if (raw == KC_BSPC ||
         raw == KC_1 || raw == KC_2 || raw == KC_3 ||
         raw == KC_4 || raw == KC_5 || raw == KC_6 ||
@@ -731,14 +728,14 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
         return;
     }
 
-    // Tiret → underscore : effacer le '-' déjà envoyé, envoyer '_'
+    // Tiret → underscore
     if (raw == KC_8) {
         tap_code(KC_BSPC);
         tap_code16(S(KC_8));
         return;
     }
 
-    // Lettres BÉPO : effacer la minuscule déjà envoyée, envoyer la majuscule
+    // Lettres BÉPO
     if (is_bepo_letter(raw)) {
         tap_code(KC_BSPC);
         tap_code16(S(raw));
