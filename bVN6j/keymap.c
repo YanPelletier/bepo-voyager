@@ -659,7 +659,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
-
 static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
@@ -704,18 +703,16 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_X: case KC_LBRC:
         case LT(10, KC_R):
         // Lettres accentuées — keycodes directs dans i18n.h
-        case BP_ECUT:         // é → É
-        case BP_EGRV:         // è → È
-        case BP_CCED:         // ç → Ç
-        case BP_AGRV:         // à → À
-        case LT(3, BP_AGRV):  // à avec layer hold
+        case BP_ECUT:         // é → É  (KC_W)
+        case BP_EGRV:         // è → È  (KC_T)
+        case BP_CCED:         // ç → Ç  (KC_BSLS)
+        case BP_AGRV:         // à → À  (KC_Z)
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Continue sans shift (touches mortes — Caps Word reste actif)
+        // Continue sans shift
         case KC_BSPC: case KC_DEL:
-        case BP_DCRC:           // ^ mort  — pour â ê î ô û
-        case ALGR(KC_D):        // ¨ mort  — pour ä ë ï ö ü  (ALGR+BP_I, BP_I=KC_D)
+        case BP_DCRC:         // ^ mort — pour â ê î ô û  (KC_Y)
         case S(KC_0): case S(KC_1): case S(KC_2): case S(KC_3):
         case S(KC_4): case S(KC_5): case S(KC_6): case S(KC_7):
         case S(KC_8): case S(KC_9):
