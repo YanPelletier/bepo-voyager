@@ -659,121 +659,54 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
-
-static bool my_caps_word_active = false;
-static bool both_shifts_pressed = false;
-
-static bool is_bepo_letter(uint16_t kc) {
-    switch (kc) {
-        case KC_A:    // BP_A
-        case KC_B:    // BP_K
-        case KC_C:    // BP_X
-        case KC_D:    // BP_I
-        case KC_E:    // BP_P
-        case KC_F:    // BP_E
-        case KC_H:    // BP_C
-        case KC_I:    // BP_D
-        case KC_J:    // BP_T
-        case KC_K:    // BP_S
-        case KC_L:    // BP_R
-        case KC_M:    // BP_Q
-        case KC_O:    // BP_L
-        case KC_P:    // BP_J
-        case KC_Q:    // BP_B
-        case KC_R:    // BP_O
-        case KC_S:    // BP_U
-        case KC_T:    // BP_EGRV (è)
-        case KC_U:    // BP_V
-        case KC_W:    // BP_ECUT (é)
-        case KC_X:    // BP_Y
-        case KC_Y:    // BP_DCRC (^)
-        case KC_Z:    // BP_AGRV (à)
-        case KC_BSLS: // BP_CCED (ç)
-        case KC_LBRC: // BP_Z
-        case KC_RBRC: // BP_W
-        case KC_QUOT: // BP_M
-        case KC_SCLN: // BP_N
-        case KC_SLSH: // BP_F
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A:    //A
+        case KC_Q:    //B
+        case KC_H:    //C
+        case KC_I:    //D
+        case KC_F:    //E
+        case KC_SLSH: //F
+        case KC_COMM: //G
+        case KC_DOT:  //H
+        case KC_D:    //I
+        case KC_P:    //J
+        case KC_B:    //K
+        case KC_O:    //L
+        case KC_QUOT: //M
+        case KC_SCLN: //N
+        case KC_R:    //O
+        case KC_E:    //P
+        case KC_M:    //Q
+        case KC_L:    //R
+        case KC_K:    //S
+        case KC_J:    //T
+        case KC_S:    //U
+        case KC_U:    //V
+        case KC_RBRC: //W
+        case KC_C:    //X
+        case KC_X:    //Y
+        case KC_LBRC: //Z
+            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
-        default:
-            return false;
-    }
-}
 
-static bool is_word_terminator(uint16_t kc) {
-    switch (kc) {
-        case KC_SPACE:
-        case KC_ENTER:
-        case KC_TAB:
-        case KC_ESCAPE:
-        case KC_V:  // BP_DOT (.)
-        case KC_G:  // BP_COMM (,)
+        // Keycodes that continue Caps Word, without shifting.
+        case S(KC_0):
+        case S(KC_1):
+        case S(KC_2):
+        case S(KC_3):
+        case S(KC_4):
+        case S(KC_5):
+        case S(KC_6):
+        case S(KC_7):
+        case S(KC_8):
+        case S(KC_0):
+        case KC_BSPC:
+        case KC_DEL:
             return true;
+
         default:
-            return false;
-    }
-} 
-
-void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    uint16_t raw = keycode;
-    if ((raw >= QK_MOD_TAP   && raw <= QK_MOD_TAP_MAX) ||
-        (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
-        raw = raw & 0xFF;
-    }
-
-    // Détection des deux shifts simultanés via get_mods()
-    uint8_t mods = get_mods();
-    bool left_shift  = (mods & MOD_BIT(KC_LSFT)) != 0;
-    bool right_shift = (mods & MOD_BIT(KC_RSFT)) != 0;
-
-    if (left_shift && right_shift) {
-        if (!both_shifts_pressed) {
-            both_shifts_pressed = true;
-            my_caps_word_active = !my_caps_word_active;
-        }
-        return;
-    } else {
-        both_shifts_pressed = false;
-    }
-
-    if (!record->event.pressed) return;
-    if (!my_caps_word_active) return;
-
-    // Terminateurs
-    if (is_word_terminator(raw)) {
-        my_caps_word_active = false;
-        return;
-    }
-
-    // Backspace et chiffres — laisser passer
-    if (raw == KC_BSPC ||
-        raw == KC_1 || raw == KC_2 || raw == KC_3 ||
-        raw == KC_4 || raw == KC_5 || raw == KC_6 ||
-        raw == KC_7 || raw == KC_9 || raw == KC_0) {
-        return;
-    }
-
-    // Tiret → underscore
-    if (raw == KC_8) {
-        register_code(KC_BSPC);
-        unregister_code(KC_BSPC);
-        wait_ms(5);
-        register_code(KC_LSFT);
-        register_code(KC_8);
-        unregister_code(KC_8);
-        unregister_code(KC_LSFT);
-        return;
-    }
-
-    // Lettres BÉPO
-    if (is_bepo_letter(raw)) {
-        register_code(KC_BSPC);
-        unregister_code(KC_BSPC);
-        wait_ms(5);
-        register_code(KC_LSFT);
-        register_code(raw);
-        unregister_code(raw);
-        unregister_code(KC_LSFT);
-        return;
+            return false;  // Deactivate Caps Word.
     }
 }
