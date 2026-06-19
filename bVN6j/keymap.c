@@ -719,33 +719,14 @@ bool caps_word_press_user(uint16_t keycode) {
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) return;
-    if (record->tap.count == 0) return;
     if (!is_caps_word_on()) return;
 
-    // Log: quelle valeur arrive vraiment pour c/v/x/z ?
-    // DUAL_FUNC_0 = LT(5, KC_F6)   valeur numérique: ?
-    // DUAL_FUNC_1 = LT(14, KC_F8)  valeur numérique: ?
-    // DUAL_FUNC_2 = LT(10, KC_R)   valeur numérique: ?
-    // DUAL_FUNC_3 = LT(8, KC_F6)   valeur numérique: ?
+    // Test 1 : est-ce que post_process est appelé quand caps_word est actif ?
+    // Tape n'importe quelle lettre avec caps word actif -> tu devrais voir un "!" apparaître
+    // Si oui : post_process fonctionne
+    // Si non : ZSA override post_process_record_user
 
-    switch (keycode) {
-        case LT(5, KC_F6):    // DUAL_FUNC_0 = x
-        case LT(14, KC_F8):   // DUAL_FUNC_1 = v
-        case LT(10, KC_R):    // DUAL_FUNC_2 = z
-        case LT(8, KC_F6):    // DUAL_FUNC_3 = c
-            break;
-        default: return;
+    if (keycode == KC_A) {  // Teste avec la touche A (bépo A = KC_A, pas dual)
+        tap_code16(KC_EXLM);  // Envoie "!" pour confirmer que la fonction s'exécute
     }
-
-    uint16_t letter = 0;
-    switch (keycode) {
-        case LT(5, KC_F6):  letter = BP_X; break;
-        case LT(14, KC_F8): letter = BP_V; break;
-        case LT(10, KC_R):  letter = BP_Z; break;
-        case LT(8, KC_F6):  letter = BP_C; break;
-    }
-
-    tap_code16(KC_BSPC);
-    register_code16(S(letter));
-    unregister_code16(S(letter));
 }
