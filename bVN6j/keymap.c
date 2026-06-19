@@ -660,42 +660,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Custom modifications starts here
 
-#define process_record_user process_record_user_oryx
-// La fonction process_record_user générée par Oryx est maintenant process_record_user_oryx
-
 static bool my_caps_word_active = false;
 
 static bool is_bepo_letter(uint16_t kc) {
     switch (kc) {
-        case KC_A:    // BP_A
-        case KC_B:    // BP_K
-        case KC_C:    // BP_X
-        case KC_D:    // BP_I
-        case KC_E:    // BP_P
-        case KC_F:    // BP_E
-        case KC_H:    // BP_C
-        case KC_I:    // BP_D
-        case KC_J:    // BP_T
-        case KC_K:    // BP_S
-        case KC_L:    // BP_R
-        case KC_M:    // BP_Q
-        case KC_O:    // BP_L
-        case KC_P:    // BP_J
-        case KC_Q:    // BP_B
-        case KC_R:    // BP_O
-        case KC_S:    // BP_U
-        case KC_T:    // BP_EGRV (è)
-        case KC_U:    // BP_V
-        case KC_W:    // BP_ECUT (é)
-        case KC_X:    // BP_Y
-        case KC_Y:    // BP_DCRC (^)
-        case KC_Z:    // BP_AGRV (à)
-        case KC_BSLS: // BP_CCED (ç)
-        case KC_LBRC: // BP_Z
-        case KC_RBRC: // BP_W
-        case KC_QUOT: // BP_M
-        case KC_SCLN: // BP_N
-        case KC_SLSH: // BP_F
+        case KC_A: case KC_B: case KC_C: case KC_D:
+        case KC_E: case KC_F: case KC_H: case KC_I:
+        case KC_J: case KC_K: case KC_L: case KC_M:
+        case KC_O: case KC_P: case KC_Q: case KC_R:
+        case KC_S: case KC_T: case KC_U: case KC_W:
+        case KC_X: case KC_Y: case KC_Z:
+        case KC_BSLS: case KC_LBRC: case KC_RBRC:
+        case KC_QUOT: case KC_SCLN: case KC_SLSH:
             return true;
         default:
             return false;
@@ -704,77 +680,68 @@ static bool is_bepo_letter(uint16_t kc) {
 
 static bool is_word_terminator(uint16_t kc) {
     switch (kc) {
-        case KC_SPACE:
-        case KC_ENTER:
-        case KC_TAB:
-        case KC_ESCAPE:
-        case KC_DOT:   // BP_H (.)
-        case KC_COMM:  // BP_G (,)
+        case KC_SPACE: case KC_ENTER: case KC_TAB:
+        case KC_ESCAPE: case KC_DOT: case KC_COMM:
             return true;
         default:
             return false;
     }
 }
 
-#undef process_record_user
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // Détection double-shift pour toggle Caps Word
+void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint16_t last_shift_time = 0;
     static bool     last_was_shift  = false;
 
-    if (record->event.pressed) {
-        uint16_t raw = keycode;
+    if (!record->event.pressed) return;
 
-        // Strip mod-tap / layer-tap
-        if ((raw >= QK_MOD_TAP   && raw <= QK_MOD_TAP_MAX) ||
-            (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
-            raw = raw & 0xFF;
-        }
-
-        // Détection double-shift
-        bool is_shift = (raw == KC_LSFT || raw == KC_RSFT);
-        if (is_shift) {
-            uint16_t now = timer_read();
-            if (last_was_shift && (now - last_shift_time) < TAPPING_TERM) {
-                my_caps_word_active = !my_caps_word_active;
-                last_was_shift = false;
-                return false;
-            }
-            last_shift_time = now;
-            last_was_shift  = true;
-        } else {
-            last_was_shift = false;
-        }
-
-        if (my_caps_word_active) {
-            // Terminateurs — désactiver Caps Word
-            if (is_word_terminator(raw)) {
-                my_caps_word_active = false;
-                return process_record_user_oryx(keycode, record);
-            }
-
-            // Backspace et chiffres — continuer sans shift
-            if (raw == KC_BSPC ||
-                raw == KC_1 || raw == KC_2 || raw == KC_3 ||
-                raw == KC_4 || raw == KC_5 || raw == KC_6 ||
-                raw == KC_7 || raw == KC_9 || raw == KC_0) {
-                return process_record_user_oryx(keycode, record);
-            }
-
-            // Tiret → underscore
-            if (raw == KC_8) {
-                tap_code16(S(KC_8));
-                return false;
-            }
-
-            // Lettres BÉPO — envoyer shiftées
-            if (is_bepo_letter(raw)) {
-                tap_code16(S(raw));
-                return false;
-            }
-        }
+    uint16_t raw = keycode;
+    if ((raw >= QK_MOD_TAP   && raw <= QK_MOD_TAP_MAX) ||
+        (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
+        raw = raw & 0xFF;
     }
 
-    return process_record_user_oryx(keycode, record);
+    // Détection double-shift
+    bool is_shift = (raw == KC_LSFT || raw == KC_RSFT);
+    if (is_shift) {
+        uint16_t now = timer_read();
+        if (last_was_shift && (now - last_shift_time) < TAPPING_TERM) {
+            my_caps_word_active = !my_caps_word_active;
+            last_was_shift = false;
+            return;
+        }
+        last_shift_time = now;
+        last_was_shift  = true;
+        return;
+    }
+    last_was_shift = false;
+
+    if (!my_caps_word_active) return;
+
+    // Terminateurs
+    if (is_word_terminator(raw)) {
+        my_caps_word_active = false;
+        return;
+    }
+
+    // Backspace et chiffres — laisser passer tel quel
+    if (raw == KC_BSPC ||
+        raw == KC_1 || raw == KC_2 || raw == KC_3 ||
+        raw == KC_4 || raw == KC_5 || raw == KC_6 ||
+        raw == KC_7 || raw == KC_9 || raw == KC_0) {
+        return;
+    }
+
+    // Tiret → underscore : effacer le '-' déjà envoyé, envoyer '_'
+    if (raw == KC_8) {
+        tap_code(KC_BSPC);
+        tap_code16(S(KC_8));
+        return;
+    }
+
+    // Lettres BÉPO : effacer la minuscule déjà envoyée, envoyer la majuscule
+    if (is_bepo_letter(raw)) {
+        tap_code(KC_BSPC);
+        tap_code16(S(raw));
+        return;
+    }
 }
