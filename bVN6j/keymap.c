@@ -659,14 +659,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
+
+// Keycodes absents du i18n.h ZSA
+#define BP_UGRV ALGR(BP_U)    // ù → Ù
+#define BP_DIAE ALGR(BP_I)    // ¨ mort (ë, ï, ö, ü)
+
 static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
-        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0
-        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1
-        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2
-        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3
+        case LT(5,  KC_F6): return BP_X;
+        case LT(14, KC_F8): return BP_V;
+        case LT(10, KC_R):  return BP_Z;
+        case LT(8,  KC_F6): return BP_C;
         default:            return 0;
     }
 }
@@ -674,19 +679,16 @@ static uint16_t dual_func_letter(uint16_t keycode) {
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint16_t letter = dual_func_letter(keycode);
     if (letter == 0) return true;
-
-    if (!is_caps_word_on()) return true;  // Caps Word inactif : comportement normal
+    if (!is_caps_word_on()) return true;
 
     if (record->event.pressed) {
-        // Envoyer directement la majuscule, bloquer tout le pipeline ZSA
         tap_code16(S(letter));
         dual_pending_keycode = keycode;
-        return false;  // ZSA ne voit jamais le press
+        return false;
     } else {
-        // Release : bloquer aussi si c'est notre touche
         if (dual_pending_keycode == keycode) {
             dual_pending_keycode = 0;
-            return false;  // ZSA ne voit jamais le release non plus
+            return false;
         }
         return true;
     }
@@ -694,7 +696,7 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
-        // Keycodes that continue Caps Word, with shift applied.
+        // Lettres bépo de base — avec shift
         case KC_A:            // A
         case KC_Q:            // B
         case KC_H:            // C
@@ -725,7 +727,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_X:            // Y
         case KC_LBRC:         // Z
         case DUAL_FUNC_2:     // Z (LT hold = layer)
-        // Lettres accentuées bépo
+        // Lettres accentuées bépo — avec shift
         case BP_ECUT:         // é → É
         case BP_EGRV:         // è → È
         case BP_AGRV:         // à → À
@@ -735,11 +737,11 @@ bool caps_word_press_user(uint16_t keycode) {
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Keycodes that continue Caps Word, without shifting.
+        // Continue sans shift
         case KC_BSPC:
         case KC_DEL:
-        case BP_DCRC:         // ^ mort — pour taper â, ê, î, ô, û
-        case BP_DIAE:         // ¨ mort — pour taper ë, ï, ö, ü
+        case BP_DCRC:         // ^ mort — pour â, ê, î, ô, û
+        case BP_DIAE:         // ¨ mort — pour ë, ï, ö, ü
         case S(KC_0):
         case S(KC_1):
         case S(KC_2):
