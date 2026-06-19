@@ -694,61 +694,65 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
-        // Lettres bépo de base
-        case KC_A:        // A
-        case KC_Q:        // B
-        case KC_H:        // C
-        case DUAL_FUNC_3: // C (dual)
-        case KC_I:        // D
-        case KC_F:        // E
-        case KC_SLSH:     // F
-        case KC_COMM:     // G
-        case KC_DOT:      // H
-        case KC_D:        // I
-        case KC_P:        // J
-        case KC_B:        // K
-        case KC_O:        // L
-        case KC_QUOT:     // M
-        case KC_SCLN:     // N
-        case KC_R:        // O
-        case KC_E:        // P
-        case KC_M:        // Q
-        case KC_L:        // R
-        case KC_K:        // S
-        case KC_J:        // T
-        case KC_S:        // U
-        case KC_U:        // V
-        case DUAL_FUNC_1: // V (dual)
-        case KC_RBRC:     // W
-        case KC_C:        // X
-        case DUAL_FUNC_0: // X (dual)
-        case KC_X:        // Y
-        case KC_LBRC:     // Z
-        case DUAL_FUNC_2: // Z (dual)
-        // Lettres accentuées et spéciales bépo
-        case BP_ECUT:     // é → É
-        case BP_EGRV:     // è → È
-        case BP_AGRV:     // à → À  (aussi LT(3, BP_AGRV) sur layer)
-        case LT(3, BP_AGRV): // à avec layer
-        case BP_CCED:     // ç → Ç
-        case BP_UGRV:     // ù → Ù
-        case BP_ITRM:     // ï → Ï
-        case BP_OTRM:     // ö → Ö
-        case BP_ETRM:     // ë → Ë
-        case BP_UTRM:     // ü → Ü
-        case BP_ATRM:     // â → Â (tréma/circonflexe via bépo)
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A:            // A
+        case KC_Q:            // B
+        case KC_H:            // C
+        case DUAL_FUNC_3:     // C (LT hold = Ctrl+Insert)
+        case KC_I:            // D
+        case KC_F:            // E
+        case KC_SLSH:         // F
+        case KC_COMM:         // G
+        case KC_DOT:          // H
+        case KC_D:            // I
+        case KC_P:            // J
+        case KC_B:            // K
+        case KC_O:            // L
+        case KC_QUOT:         // M
+        case KC_SCLN:         // N
+        case KC_R:            // O
+        case KC_E:            // P
+        case KC_M:            // Q
+        case KC_L:            // R
+        case KC_K:            // S
+        case KC_J:            // T
+        case KC_S:            // U
+        case KC_U:            // V
+        case DUAL_FUNC_1:     // V (LT hold = Shift+Insert)
+        case KC_RBRC:         // W
+        case KC_C:            // X
+        case DUAL_FUNC_0:     // X (LT hold = Shift+Delete)
+        case KC_X:            // Y
+        case KC_LBRC:         // Z
+        case DUAL_FUNC_2:     // Z (LT hold = layer)
+        // Lettres accentuées bépo
+        case BP_ECUT:         // é → É
+        case BP_EGRV:         // è → È
+        case BP_AGRV:         // à → À
+        case LT(3, BP_AGRV):  // à avec layer hold
+        case BP_CCED:         // ç → Ç
+        case BP_UGRV:         // ù → Ù
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Continue sans shift
+        // Keycodes that continue Caps Word, without shifting.
         case KC_BSPC:
         case KC_DEL:
-        case S(KC_0): case S(KC_1): case S(KC_2): case S(KC_3):
-        case S(KC_4): case S(KC_5): case S(KC_6): case S(KC_7):
-        case S(KC_8): case S(KC_9):
+        case BP_DCRC:         // ^ mort — pour taper â, ê, î, ô, û
+        case BP_DIAE:         // ¨ mort — pour taper ë, ï, ö, ü
+        case S(KC_0):
+        case S(KC_1):
+        case S(KC_2):
+        case S(KC_3):
+        case S(KC_4):
+        case S(KC_5):
+        case S(KC_6):
+        case S(KC_7):
+        case S(KC_8):
+        case S(KC_9):
             return true;
 
         default:
-            return false;
+            return false;  // Deactivate Caps Word.
     }
 }
