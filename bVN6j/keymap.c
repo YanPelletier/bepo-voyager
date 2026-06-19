@@ -718,24 +718,34 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // On agit sur le release uniquement (tap.count résolu seulement là pour LT)
     if (record->event.pressed) return;
-    if (record->tap.count == 0) return;  // C'est un hold, pas un tap
+    if (record->tap.count == 0) return;
+    if (!is_caps_word_on()) return;
 
-    uint16_t letter = 0;
+    // Log: quelle valeur arrive vraiment pour c/v/x/z ?
+    // DUAL_FUNC_0 = LT(5, KC_F6)   valeur numérique: ?
+    // DUAL_FUNC_1 = LT(14, KC_F8)  valeur numérique: ?
+    // DUAL_FUNC_2 = LT(10, KC_R)   valeur numérique: ?
+    // DUAL_FUNC_3 = LT(8, KC_F6)   valeur numérique: ?
+
     switch (keycode) {
-        case DUAL_FUNC_0: letter = BP_X; break;
-        case DUAL_FUNC_1: letter = BP_V; break;
-        case DUAL_FUNC_2: letter = BP_Z; break;
-        case DUAL_FUNC_3: letter = BP_C; break;
+        case LT(5, KC_F6):    // DUAL_FUNC_0 = x
+        case LT(14, KC_F8):   // DUAL_FUNC_1 = v
+        case LT(10, KC_R):    // DUAL_FUNC_2 = z
+        case LT(8, KC_F6):    // DUAL_FUNC_3 = c
+            break;
         default: return;
     }
 
-    if (!is_caps_word_on()) return;  // Vérifier après le switch
+    uint16_t letter = 0;
+    switch (keycode) {
+        case LT(5, KC_F6):  letter = BP_X; break;
+        case LT(14, KC_F8): letter = BP_V; break;
+        case LT(10, KC_R):  letter = BP_Z; break;
+        case LT(8, KC_F6):  letter = BP_C; break;
+    }
 
-    // Annuler la lettre minuscule déjà envoyée, re-envoyer en majuscule
     tap_code16(KC_BSPC);
-    // Envoyer directement sans passer par caps_word, pour éviter de le désactiver
     register_code16(S(letter));
     unregister_code16(S(letter));
 }
