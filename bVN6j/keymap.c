@@ -668,10 +668,10 @@ static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
-        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0 = x
-        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1 = v
-        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2 = z
-        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3 = c
+        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0
+        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1
+        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2
+        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3
         default:            return 0;
     }
 }
@@ -680,7 +680,6 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint16_t letter = dual_func_letter(keycode);
     if (letter == 0) return true;
     if (!is_caps_word_on()) return true;
-
     if (record->event.pressed) {
         tap_code16(S(letter));
         dual_pending_keycode = keycode;
@@ -696,38 +695,19 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
-        // Lettres bépo de base — avec shift
-        case KC_A:            // A
-        case KC_Q:            // B
-        case KC_H:            // C
-        case DUAL_FUNC_3:     // C (LT hold = Ctrl+Insert)
-        case KC_I:            // D
-        case KC_F:            // E
-        case KC_SLSH:         // F
-        case KC_COMM:         // G
-        case KC_DOT:          // H
-        case KC_D:            // I
-        case KC_P:            // J
-        case KC_B:            // K
-        case KC_O:            // L
-        case KC_QUOT:         // M
-        case KC_SCLN:         // N
-        case KC_R:            // O
-        case KC_E:            // P
-        case KC_M:            // Q
-        case KC_L:            // R
-        case KC_K:            // S
-        case KC_J:            // T
-        case KC_S:            // U
-        case KC_U:            // V
-        case DUAL_FUNC_1:     // V (LT hold = Shift+Insert)
-        case KC_RBRC:         // W
-        case KC_C:            // X
-        case DUAL_FUNC_0:     // X (LT hold = Shift+Delete)
-        case KC_X:            // Y
-        case KC_LBRC:         // Z
-        case DUAL_FUNC_2:     // Z (LT hold = layer)
-        // Lettres accentuées bépo — avec shift
+        // Lettres bépo de base
+        case KC_A: case KC_Q: case KC_H:
+        case LT(8,  KC_F6):
+        case KC_I: case KC_F: case KC_SLSH: case KC_COMM: case KC_DOT:
+        case KC_D: case KC_P: case KC_B: case KC_O: case KC_QUOT:
+        case KC_SCLN: case KC_R: case KC_E: case KC_M: case KC_L:
+        case KC_K: case KC_J: case KC_S: case KC_U:
+        case LT(14, KC_F8):
+        case KC_RBRC: case KC_C:
+        case LT(5,  KC_F6):
+        case KC_X: case KC_LBRC:
+        case LT(10, KC_R):
+        // Lettres accentuées bépo
         case BP_ECUT:         // é → É
         case BP_EGRV:         // è → È
         case BP_AGRV:         // à → À
@@ -738,23 +718,15 @@ bool caps_word_press_user(uint16_t keycode) {
             return true;
 
         // Continue sans shift
-        case KC_BSPC:
-        case KC_DEL:
+        case KC_BSPC: case KC_DEL:
         case BP_DCRC:         // ^ mort — pour â, ê, î, ô, û
         case BP_DIAE:         // ¨ mort — pour ë, ï, ö, ü
-        case S(KC_0):
-        case S(KC_1):
-        case S(KC_2):
-        case S(KC_3):
-        case S(KC_4):
-        case S(KC_5):
-        case S(KC_6):
-        case S(KC_7):
-        case S(KC_8):
-        case S(KC_9):
+        case S(KC_0): case S(KC_1): case S(KC_2): case S(KC_3):
+        case S(KC_4): case S(KC_5): case S(KC_6): case S(KC_7):
+        case S(KC_8): case S(KC_9):
             return true;
 
         default:
-            return false;  // Deactivate Caps Word.
+            return false;
     }
 }
