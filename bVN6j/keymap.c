@@ -659,13 +659,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
+static bool caps_word_dual_pending = false;
+
+bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!is_caps_word_on()) return true;
+
+    switch (keycode) {
+        case DUAL_FUNC_0:  // x
+        case DUAL_FUNC_1:  // v
+        case DUAL_FUNC_2:  // z
+        case DUAL_FUNC_3:  // c
+            if (record->event.pressed) {
+                caps_word_dual_pending = true;
+            }
+            return true;
+        default:
+            return true;
+    }
+}
+
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A:    //A
         case KC_Q:    //B
         case KC_H:    //C
-        case DUAL_FUNC_3:
         case KC_I:    //D
         case KC_F:    //E
         case KC_SLSH: //F
@@ -685,13 +703,10 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_J:    //T
         case KC_S:    //U
         case KC_U:    //V
-        case LT(14, KC_F8):
         case KC_RBRC: //W
         case KC_C:    //X
         case KC_X:    //Y
-        case KC_F6:
         case KC_LBRC: //Z
-        case LT(10, KC_R):
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
 
