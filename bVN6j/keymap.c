@@ -718,8 +718,8 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!is_caps_word_on()) return;
-    if (!record->event.pressed) return;
+    // On agit sur le release uniquement (tap.count résolu seulement là pour LT)
+    if (record->event.pressed) return;
     if (record->tap.count == 0) return;  // C'est un hold, pas un tap
 
     uint16_t letter = 0;
@@ -731,7 +731,11 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
         default: return;
     }
 
-    // La lettre minuscule a déjà été envoyée par le ZSA — on corrige
+    if (!is_caps_word_on()) return;  // Vérifier après le switch
+
+    // Annuler la lettre minuscule déjà envoyée, re-envoyer en majuscule
     tap_code16(KC_BSPC);
-    tap_code16(S(letter));
+    // Envoyer directement sans passer par caps_word, pour éviter de le désactiver
+    register_code16(S(letter));
+    unregister_code16(S(letter));
 }
