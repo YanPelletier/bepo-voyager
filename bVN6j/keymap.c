@@ -27,13 +27,13 @@ enum tap_dance_codes {
   DANCE_11,
 };
 
-#define DUAL_FUNC_0 LT(5, KC_F6)
-#define DUAL_FUNC_1 LT(14, KC_F8)
-#define DUAL_FUNC_2 LT(10, KC_R)
-#define DUAL_FUNC_3 LT(8, KC_F6)
-#define DUAL_FUNC_4 LT(11, KC_V)
-#define DUAL_FUNC_5 LT(9, KC_Z)
-#define DUAL_FUNC_6 LT(6, KC_L)
+#define DUAL_FUNC_0 LT(11, KC_O)
+#define DUAL_FUNC_1 LT(13, KC_F19)
+#define DUAL_FUNC_2 LT(2, KC_U)
+#define DUAL_FUNC_3 LT(8, KC_F22)
+#define DUAL_FUNC_4 LT(1, KC_F22)
+#define DUAL_FUNC_5 LT(5, KC_2)
+#define DUAL_FUNC_6 LT(4, KC_F8)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_voyager(
@@ -48,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     BP_DLR,         BP_DQOT,        BP_LGIL,        BP_RGIL,        BP_LPRN,        BP_RPRN,                                        BP_AT,          BP_PLUS,        BP_MINS,        BP_SLSH,        BP_ASTR,        BP_EQL,         
     BP_HASH,        BP_1,           BP_2,           BP_3,           DUAL_FUNC_4,    BP_5,                                           BP_6,           DUAL_FUNC_5,    BP_8,           BP_9,           BP_0,           BP_DEGR,        
     BP_NDSH_MAC,    BP_MDSH,        BP_LESS,        BP_GRTR,        BP_LBRC,        BP_RBRC,                                        BP_CIRC,        RALT(BP_PLUS),  RALT(BP_MINS),  RALT(BP_SLSH),  RALT(BP_ASTR),  RALT(BP_EQL),   
-                                                    BP_PERC,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_NO
+                                                    BP_PERC,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [2] = LAYOUT_voyager(
     KC_ESCAPE,      BP_DQOT,        BP_LGIL,        BP_RGIL,        BP_LPRN,        TD(DANCE_4),                                    TD(DANCE_5),    TD(DANCE_6),    BP_MINS,        BP_SLSH,        TD(DANCE_7),    BP_EQL,         
