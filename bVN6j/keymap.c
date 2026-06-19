@@ -660,14 +660,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Custom modifications starts here
 
-// ─── Caps Word manuel ───────────────────────────────────────────────
+#define process_record_user process_record_user_oryx
+// La fonction process_record_user générée par Oryx est maintenant process_record_user_oryx
+
 static bool my_caps_word_active = false;
 
-void my_caps_word_enable(void)  { my_caps_word_active = true;  }
-void my_caps_word_disable(void) { my_caps_word_active = false; }
-bool my_caps_word_is_on(void)   { return my_caps_word_active;  }
-
-// Keycodes KC_ bruts qui sont des lettres BÉPO (à shifter)
 static bool is_bepo_letter(uint16_t kc) {
     switch (kc) {
         case KC_A:    // BP_A
@@ -705,7 +702,6 @@ static bool is_bepo_letter(uint16_t kc) {
     }
 }
 
-// Keycodes qui terminent le mot
 static bool is_word_terminator(uint16_t kc) {
     switch (kc) {
         case KC_SPACE:
@@ -720,8 +716,10 @@ static bool is_word_terminator(uint16_t kc) {
     }
 }
 
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    // Détecter double-shift pour activer/désactiver
+#undef process_record_user
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Détection double-shift pour toggle Caps Word
     static uint16_t last_shift_time = 0;
     static bool     last_was_shift  = false;
 
@@ -739,11 +737,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         if (is_shift) {
             uint16_t now = timer_read();
             if (last_was_shift && (now - last_shift_time) < TAPPING_TERM) {
-                if (my_caps_word_active) {
-                    my_caps_word_disable();
-                } else {
-                    my_caps_word_enable();
-                }
+                my_caps_word_active = !my_caps_word_active;
                 last_was_shift = false;
                 return false;
             }
@@ -756,18 +750,16 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         if (my_caps_word_active) {
             // Terminateurs — désactiver Caps Word
             if (is_word_terminator(raw)) {
-                my_caps_word_disable();
-                return process_record_user(keycode, record);
+                my_caps_word_active = false;
+                return process_record_user_oryx(keycode, record);
             }
 
-            // Backspace — continuer sans shift
-            if (raw == KC_BSPC) {
-                return process_record_user(keycode, record);
-            }
-
-            // Chiffres — continuer sans shift
-            if (raw >= KC_1 && raw <= KC_0) {
-                return process_record_user(keycode, record);
+            // Backspace et chiffres — continuer sans shift
+            if (raw == KC_BSPC ||
+                raw == KC_1 || raw == KC_2 || raw == KC_3 ||
+                raw == KC_4 || raw == KC_5 || raw == KC_6 ||
+                raw == KC_7 || raw == KC_9 || raw == KC_0) {
+                return process_record_user_oryx(keycode, record);
             }
 
             // Tiret → underscore
@@ -784,5 +776,5 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    return process_record_user(keycode, record);
+    return process_record_user_oryx(keycode, record);
 }
