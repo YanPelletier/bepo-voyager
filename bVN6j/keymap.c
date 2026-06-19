@@ -665,7 +665,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_A:    //A
         case KC_Q:    //B
         case KC_H:    //C
-        case DUAL_FUNC_:
+        case DUAL_FUNC_3:
         case KC_I:    //D
         case KC_F:    //E
         case KC_SLSH: //F
