@@ -701,7 +701,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case S(KC_6):
         case S(KC_7):
         case S(KC_8):
-        case S(KC_0):
+        case S(KC_9):
         case KC_BSPC:
         case KC_DEL:
             return true;
