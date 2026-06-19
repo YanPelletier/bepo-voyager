@@ -659,55 +659,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
-static bool caps_word_dual_pending = false;
-
-bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!is_caps_word_on()) return true;
-
-    switch (keycode) {
-        case DUAL_FUNC_0:  // x
-        case DUAL_FUNC_1:  // v
-        case DUAL_FUNC_2:  // z
-        case DUAL_FUNC_3:  // c
-            if (record->event.pressed) {
-                caps_word_dual_pending = true;
-            }
-            return true;
-        default:
-            return true;
-    }
-}
+// Custom modifications starts here
 
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
-        case KC_A:    //A
-        case KC_Q:    //B
-        case KC_H:    //C
-        case KC_I:    //D
-        case KC_F:    //E
-        case KC_SLSH: //F
-        case KC_COMM: //G
-        case KC_DOT:  //H
-        case KC_D:    //I
-        case KC_P:    //J
-        case KC_B:    //K
-        case KC_O:    //L
-        case KC_QUOT: //M
-        case KC_SCLN: //N
-        case KC_R:    //O
-        case KC_E:    //P
-        case KC_M:    //Q
-        case KC_L:    //R
-        case KC_K:    //S
-        case KC_J:    //T
-        case KC_S:    //U
-        case KC_U:    //V
-        case KC_RBRC: //W
-        case KC_C:    //X
-        case KC_X:    //Y
-        case KC_LBRC: //Z
-            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+        case KC_A:          //A
+        case KC_Q:          //B
+        case KC_H:          //C
+        case DUAL_FUNC_3:   //C (LT hold = Ctrl+Insert)
+        case KC_I:          //D
+        case KC_F:          //E
+        case KC_SLSH:       //F
+        case KC_COMM:       //G
+        case KC_DOT:        //H
+        case KC_D:          //I
+        case KC_P:          //J
+        case KC_B:          //K
+        case KC_O:          //L
+        case KC_QUOT:       //M
+        case KC_SCLN:       //N
+        case KC_R:          //O
+        case KC_E:          //P
+        case KC_M:          //Q
+        case KC_L:          //R
+        case KC_K:          //S
+        case KC_J:          //T
+        case KC_S:          //U
+        case KC_U:          //V
+        case DUAL_FUNC_1:   //V (LT hold = Shift+Insert)
+        case KC_RBRC:       //W
+        case KC_C:          //X
+        case DUAL_FUNC_0:   //X (LT hold = Shift+Delete)
+        case KC_X:          //Y
+        case KC_LBRC:       //Z
+        case DUAL_FUNC_2:   //Z (LT hold = layer)
+            add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
         // Keycodes that continue Caps Word, without shifting.
@@ -728,4 +715,23 @@ bool caps_word_press_user(uint16_t keycode) {
         default:
             return false;  // Deactivate Caps Word.
     }
+}
+
+void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!is_caps_word_on()) return;
+    if (!record->event.pressed) return;
+    if (record->tap.count == 0) return;  // C'est un hold, pas un tap
+
+    uint16_t letter = 0;
+    switch (keycode) {
+        case DUAL_FUNC_0: letter = BP_X; break;
+        case DUAL_FUNC_1: letter = BP_V; break;
+        case DUAL_FUNC_2: letter = BP_Z; break;
+        case DUAL_FUNC_3: letter = BP_C; break;
+        default: return;
+    }
+
+    // La lettre minuscule a déjà été envoyée par le ZSA — on corrige
+    tap_code16(KC_BSPC);
+    tap_code16(S(letter));
 }
