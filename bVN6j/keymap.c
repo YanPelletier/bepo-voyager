@@ -668,10 +668,10 @@ static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
-        case LT(5,  KC_F6): return BP_X;
-        case LT(14, KC_F8): return BP_V;
-        case LT(10, KC_R):  return BP_Z;
-        case LT(8,  KC_F6): return BP_C;
+        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0 = x
+        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1 = v
+        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2 = z
+        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3 = c
         default:            return 0;
     }
 }
