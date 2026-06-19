@@ -755,15 +755,25 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // Tiret → underscore
     if (raw == KC_8) {
-        tap_code(KC_BSPC);
-        tap_code16(S(KC_8));
+        register_code(KC_BSPC);
+        unregister_code(KC_BSPC);
+        wait_ms(5);
+        register_code(KC_LSFT);
+        register_code(KC_8);
+        unregister_code(KC_8);
+        unregister_code(KC_LSFT);
         return;
     }
 
     // Lettres BÉPO
     if (is_bepo_letter(raw)) {
-        tap_code(KC_BSPC);
-        tap_code16(S(raw));
+        register_code(KC_BSPC);
+        unregister_code(KC_BSPC);
+        wait_ms(5);
+        register_code(KC_LSFT);
+        register_code(raw);
+        unregister_code(raw);
+        unregister_code(KC_LSFT);
         return;
     }
 }
