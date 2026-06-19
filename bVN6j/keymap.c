@@ -659,12 +659,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
-// Custom modifications starts here
-
 static uint16_t dual_pending_keycode = 0;
-static uint16_t dual_pending_timer   = 0;
 
-// Retourne la lettre BP correspondante, ou 0 si pas un DUAL_FUNC lettre
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
         case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0
@@ -677,30 +673,20 @@ static uint16_t dual_func_letter(uint16_t keycode) {
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint16_t letter = dual_func_letter(keycode);
+    if (letter == 0) return true;
 
-    if (letter == 0) {
-        // Pas un de nos DUAL_FUNC — si un hold était en attente, c'est confirmé hold
-        dual_pending_keycode = 0;
-        return true;
-    }
+    if (!is_caps_word_on()) return true;  // Caps Word inactif : comportement normal
 
     if (record->event.pressed) {
-        // Mémoriser et laisser passer (ZSA va gérer le tap/hold)
+        // Envoyer directement la majuscule, bloquer tout le pipeline ZSA
+        tap_code16(S(letter));
         dual_pending_keycode = keycode;
-        dual_pending_timer   = timer_read();
-        return true;
+        return false;  // ZSA ne voit jamais le press
     } else {
-        // Release — c'est un tap si la durée < TAPPING_TERM
-        bool is_tap = (dual_pending_keycode == keycode) &&
-                      (timer_elapsed(dual_pending_timer) < TAPPING_TERM);
-        dual_pending_keycode = 0;
-
-        if (is_tap && is_caps_word_on()) {
-            // Bloquer le release normal (ZSA a déjà envoyé la lettre minuscule au press)
-            // Corriger : backspace + majuscule
-            tap_code16(KC_BSPC);
-            tap_code16(S(letter));
-            return false;  // On a géré nous-mêmes
+        // Release : bloquer aussi si c'est notre touche
+        if (dual_pending_keycode == keycode) {
+            dual_pending_keycode = 0;
+            return false;  // ZSA ne voit jamais le release non plus
         }
         return true;
     }
