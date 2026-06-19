@@ -660,54 +660,129 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Custom modifications starts here
 
-void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!is_caps_word_on() || !record->event.pressed) return;
+// ─── Caps Word manuel ───────────────────────────────────────────────
+static bool my_caps_word_active = false;
 
-    uint16_t raw = keycode;
-    if ((raw >= QK_MOD_TAP && raw <= QK_MOD_TAP_MAX) ||
-        (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
-        raw = raw & 0xFF;
-    }
+void my_caps_word_enable(void)  { my_caps_word_active = true;  }
+void my_caps_word_disable(void) { my_caps_word_active = false; }
+bool my_caps_word_is_on(void)   { return my_caps_word_active;  }
 
-    if (raw == KC_C || raw == KC_H || raw == KC_V ||
-        raw == KC_X || raw == KC_G) {
-        tap_code16(S(raw));
+// Keycodes KC_ bruts qui sont des lettres BÉPO (à shifter)
+static bool is_bepo_letter(uint16_t kc) {
+    switch (kc) {
+        case KC_A:    // BP_A
+        case KC_B:    // BP_K
+        case KC_C:    // BP_X
+        case KC_D:    // BP_I
+        case KC_E:    // BP_P
+        case KC_F:    // BP_E
+        case KC_H:    // BP_C
+        case KC_I:    // BP_D
+        case KC_J:    // BP_T
+        case KC_K:    // BP_S
+        case KC_L:    // BP_R
+        case KC_M:    // BP_Q
+        case KC_O:    // BP_L
+        case KC_P:    // BP_J
+        case KC_Q:    // BP_B
+        case KC_R:    // BP_O
+        case KC_S:    // BP_U
+        case KC_T:    // BP_EGRV (è)
+        case KC_U:    // BP_V
+        case KC_W:    // BP_ECUT (é)
+        case KC_X:    // BP_Y
+        case KC_Y:    // BP_DCRC (^)
+        case KC_Z:    // BP_AGRV (à)
+        case KC_BSLS: // BP_CCED (ç)
+        case KC_LBRC: // BP_Z
+        case KC_RBRC: // BP_W
+        case KC_QUOT: // BP_M
+        case KC_SCLN: // BP_N
+        case KC_SLSH: // BP_F
+            return true;
+        default:
+            return false;
     }
 }
 
-bool caps_word_press_user(uint16_t keycode) {
-    if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX) ||
-        (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
-        keycode = keycode & 0xFF;
-    }
-
-    switch (keycode) {
-        case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
-        case KC_6: case KC_7: case KC_9: case KC_0:
+// Keycodes qui terminent le mot
+static bool is_word_terminator(uint16_t kc) {
+    switch (kc) {
+        case KC_SPACE:
+        case KC_ENTER:
+        case KC_TAB:
+        case KC_ESCAPE:
+        case KC_DOT:   // BP_H (.)
+        case KC_COMM:  // BP_G (,)
             return true;
-
-        case KC_8:    // BP_MINS → _
-            add_weak_mods(MOD_BIT(KC_LSFT));
-            return true;
-
-        case KC_BSPC:
-            return true;
-
-        case KC_SPACE: case KC_ENTER: case KC_TAB: case KC_ESCAPE:
-        case KC_DOT: case KC_COMM:
-            return false;
-
-        case KC_LSFT: case KC_RSFT:
-        case KC_LCTL: case KC_RCTL:
-        case KC_LALT: case KC_RALT:
-        case KC_LGUI: case KC_RGUI:
-            return true;
-
         default:
-            if (keycode < 0x100) {
-                add_weak_mods(MOD_BIT(KC_LSFT));
-                return true;
-            }
             return false;
     }
+}
+
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    // Détecter double-shift pour activer/désactiver
+    static uint16_t last_shift_time = 0;
+    static bool     last_was_shift  = false;
+
+    if (record->event.pressed) {
+        uint16_t raw = keycode;
+
+        // Strip mod-tap / layer-tap
+        if ((raw >= QK_MOD_TAP   && raw <= QK_MOD_TAP_MAX) ||
+            (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
+            raw = raw & 0xFF;
+        }
+
+        // Détection double-shift
+        bool is_shift = (raw == KC_LSFT || raw == KC_RSFT);
+        if (is_shift) {
+            uint16_t now = timer_read();
+            if (last_was_shift && (now - last_shift_time) < TAPPING_TERM) {
+                if (my_caps_word_active) {
+                    my_caps_word_disable();
+                } else {
+                    my_caps_word_enable();
+                }
+                last_was_shift = false;
+                return false;
+            }
+            last_shift_time = now;
+            last_was_shift  = true;
+        } else {
+            last_was_shift = false;
+        }
+
+        if (my_caps_word_active) {
+            // Terminateurs — désactiver Caps Word
+            if (is_word_terminator(raw)) {
+                my_caps_word_disable();
+                return process_record_user(keycode, record);
+            }
+
+            // Backspace — continuer sans shift
+            if (raw == KC_BSPC) {
+                return process_record_user(keycode, record);
+            }
+
+            // Chiffres — continuer sans shift
+            if (raw >= KC_1 && raw <= KC_0) {
+                return process_record_user(keycode, record);
+            }
+
+            // Tiret → underscore
+            if (raw == KC_8) {
+                tap_code16(S(KC_8));
+                return false;
+            }
+
+            // Lettres BÉPO — envoyer shiftées
+            if (is_bepo_letter(raw)) {
+                tap_code16(S(raw));
+                return false;
+            }
+        }
+    }
+
+    return process_record_user(keycode, record);
 }

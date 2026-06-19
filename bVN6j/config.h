@@ -62,5 +62,3 @@
 
 
 // Custom modifications starts here
-#define CAPS_WORD_IDLE_TIMEOUT 0
-#define BOTH_SHIFTS_TURNS_ON_CAPS_WORD

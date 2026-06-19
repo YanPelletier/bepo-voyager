@@ -10,4 +10,3 @@ COMBO_ENABLE = yes
 
 
 # Custom modifications starts here
-CAPS_WORD_ENABLE = yes
