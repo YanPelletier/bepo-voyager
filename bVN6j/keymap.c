@@ -665,14 +665,35 @@ static bool both_shifts_pressed = false;
 
 static bool is_bepo_letter(uint16_t kc) {
     switch (kc) {
-        case KC_A: case KC_B: case KC_C: case KC_D:
-        case KC_E: case KC_F: case KC_H: case KC_I:
-        case KC_J: case KC_K: case KC_L: case KC_M:
-        case KC_O: case KC_P: case KC_Q: case KC_R:
-        case KC_S: case KC_T: case KC_U: case KC_W:
-        case KC_X: case KC_Y: case KC_Z:
-        case KC_BSLS: case KC_LBRC: case KC_RBRC:
-        case KC_QUOT: case KC_SCLN: case KC_SLSH:
+        case KC_A:    // BP_A
+        case KC_B:    // BP_K
+        case KC_C:    // BP_X
+        case KC_D:    // BP_I
+        case KC_E:    // BP_P
+        case KC_F:    // BP_E
+        case KC_H:    // BP_C
+        case KC_I:    // BP_D
+        case KC_J:    // BP_T
+        case KC_K:    // BP_S
+        case KC_L:    // BP_R
+        case KC_M:    // BP_Q
+        case KC_O:    // BP_L
+        case KC_P:    // BP_J
+        case KC_Q:    // BP_B
+        case KC_R:    // BP_O
+        case KC_S:    // BP_U
+        case KC_T:    // BP_EGRV (è)
+        case KC_U:    // BP_V
+        case KC_W:    // BP_ECUT (é)
+        case KC_X:    // BP_Y
+        case KC_Y:    // BP_DCRC (^)
+        case KC_Z:    // BP_AGRV (à)
+        case KC_BSLS: // BP_CCED (ç)
+        case KC_LBRC: // BP_Z
+        case KC_RBRC: // BP_W
+        case KC_QUOT: // BP_M
+        case KC_SCLN: // BP_N
+        case KC_SLSH: // BP_F
             return true;
         default:
             return false;
@@ -681,13 +702,17 @@ static bool is_bepo_letter(uint16_t kc) {
 
 static bool is_word_terminator(uint16_t kc) {
     switch (kc) {
-        case KC_SPACE: case KC_ENTER: case KC_TAB:
-        case KC_ESCAPE: case KC_DOT: case KC_COMM:
+        case KC_SPACE:
+        case KC_ENTER:
+        case KC_TAB:
+        case KC_ESCAPE:
+        case KC_V:  // BP_DOT (.)
+        case KC_G:  // BP_COMM (,)
             return true;
         default:
             return false;
     }
-}
+} 
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint16_t raw = keycode;
