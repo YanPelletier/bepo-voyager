@@ -661,13 +661,58 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // Custom modifications starts here
 // Custom modifications starts here
 
+static uint16_t dual_pending_keycode = 0;
+static uint16_t dual_pending_timer   = 0;
+
+// Retourne la lettre BP correspondante, ou 0 si pas un DUAL_FUNC lettre
+static uint16_t dual_func_letter(uint16_t keycode) {
+    switch (keycode) {
+        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0
+        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1
+        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2
+        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3
+        default:            return 0;
+    }
+}
+
+bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
+    uint16_t letter = dual_func_letter(keycode);
+
+    if (letter == 0) {
+        // Pas un de nos DUAL_FUNC — si un hold était en attente, c'est confirmé hold
+        dual_pending_keycode = 0;
+        return true;
+    }
+
+    if (record->event.pressed) {
+        // Mémoriser et laisser passer (ZSA va gérer le tap/hold)
+        dual_pending_keycode = keycode;
+        dual_pending_timer   = timer_read();
+        return true;
+    } else {
+        // Release — c'est un tap si la durée < TAPPING_TERM
+        bool is_tap = (dual_pending_keycode == keycode) &&
+                      (timer_elapsed(dual_pending_timer) < TAPPING_TERM);
+        dual_pending_keycode = 0;
+
+        if (is_tap && is_caps_word_on()) {
+            // Bloquer le release normal (ZSA a déjà envoyé la lettre minuscule au press)
+            // Corriger : backspace + majuscule
+            tap_code16(KC_BSPC);
+            tap_code16(S(letter));
+            return false;  // On a géré nous-mêmes
+        }
+        return true;
+    }
+}
+
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A:          //A
         case KC_Q:          //B
         case KC_H:          //C
-        case DUAL_FUNC_3:   //C (LT hold = Ctrl+Insert)
+        case LT(8,  KC_F6): // DUAL_FUNC_3 = c
         case KC_I:          //D
         case KC_F:          //E
         case KC_SLSH:       //F
@@ -687,13 +732,13 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_J:          //T
         case KC_S:          //U
         case KC_U:          //V
-        case DUAL_FUNC_1:   //V (LT hold = Shift+Insert)
+        case LT(14, KC_F8): // DUAL_FUNC_1 = v
         case KC_RBRC:       //W
         case KC_C:          //X
-        case DUAL_FUNC_0:   //X (LT hold = Shift+Delete)
+        case LT(5,  KC_F6): // DUAL_FUNC_0 = x
         case KC_X:          //Y
         case KC_LBRC:       //Z
-        case DUAL_FUNC_2:   //Z (LT hold = layer)
+        case LT(10, KC_R):  // DUAL_FUNC_2 = z
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
@@ -714,19 +759,5 @@ bool caps_word_press_user(uint16_t keycode) {
 
         default:
             return false;  // Deactivate Caps Word.
-    }
-}
-
-void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) return;
-    if (!is_caps_word_on()) return;
-
-    // Test 1 : est-ce que post_process est appelé quand caps_word est actif ?
-    // Tape n'importe quelle lettre avec caps word actif -> tu devrais voir un "!" apparaître
-    // Si oui : post_process fonctionne
-    // Si non : ZSA override post_process_record_user
-
-    if (keycode == KC_A) {  // Teste avec la touche A (bépo A = KC_A, pas dual)
-        tap_code16(KC_EXLM);  // Envoie "!" pour confirmer que la fonction s'exécute
     }
 }
