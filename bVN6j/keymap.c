@@ -659,38 +659,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 // Custom modifications starts here
+
+void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!is_caps_word_on() || !record->event.pressed) return;
+
+    uint16_t raw = keycode;
+    if ((raw >= QK_MOD_TAP && raw <= QK_MOD_TAP_MAX) ||
+        (raw >= QK_LAYER_TAP && raw <= QK_LAYER_TAP_MAX)) {
+        raw = raw & 0xFF;
+    }
+
+    if (raw == KC_C || raw == KC_H || raw == KC_V ||
+        raw == KC_X || raw == KC_G) {
+        tap_code16(S(raw));
+    }
+}
+
 bool caps_word_press_user(uint16_t keycode) {
-    // Strip mod-tap et layer-tap → tap keycode brut
     if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX) ||
         (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
         keycode = keycode & 0xFF;
     }
 
     switch (keycode) {
-        // Chiffres — continuent sans shift
         case KC_1: case KC_2: case KC_3: case KC_4: case KC_5:
         case KC_6: case KC_7: case KC_9: case KC_0:
             return true;
 
-        // Tiret (BP_MINS) → underscore avec shift
-        case KC_8:
+        case KC_8:    // BP_MINS → _
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
-        // Backspace — continue pour corriger
         case KC_BSPC:
             return true;
 
-        // Séparateurs — terminent le mot
-        case KC_SPACE:
-        case KC_ENTER:
-        case KC_TAB:
-        case KC_ESCAPE:
-        case KC_DOT:   // BP_H  (.)
-        case KC_COMM:  // BP_G  (,)
+        case KC_SPACE: case KC_ENTER: case KC_TAB: case KC_ESCAPE:
+        case KC_DOT: case KC_COMM:
             return false;
 
-        // Modificateurs seuls — ne terminent pas
         case KC_LSFT: case KC_RSFT:
         case KC_LCTL: case KC_RCTL:
         case KC_LALT: case KC_RALT:
@@ -698,12 +704,10 @@ bool caps_word_press_user(uint16_t keycode) {
             return true;
 
         default:
-            // Tout keycode basic continue avec shift (lettres, accentués, etc.)
             if (keycode < 0x100) {
                 add_weak_mods(MOD_BIT(KC_LSFT));
                 return true;
             }
-            // QK_MODS et autres keycodes complexes terminent
             return false;
     }
 }
