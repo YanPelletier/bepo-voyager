@@ -664,11 +664,11 @@ static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
-        case LT(11, KC_O):   return BP_X;   // DUAL_FUNC_0 = x
-        case LT(13, KC_F19): return BP_V;   // DUAL_FUNC_1 = v
-        case LT(2,  KC_U):   return BP_Z;   // DUAL_FUNC_2 = z
-        case LT(8,  KC_F22): return BP_C;   // DUAL_FUNC_3 = c
-        default:             return 0;
+        case DUAL_FUNC_0: return BP_X;   // x
+        case DUAL_FUNC_1: return BP_V;   // v
+        case DUAL_FUNC_2: return BP_Z;   // z
+        case DUAL_FUNC_3: return BP_C;   // c
+        default:          return 0;
     }
 }
 
@@ -692,16 +692,16 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         case KC_A: case KC_Q: case KC_H:
-        case LT(8,  KC_F22):  // DUAL_FUNC_3 = c
+        case DUAL_FUNC_3:
         case KC_I: case KC_F: case KC_SLSH: case KC_COMM: case KC_DOT:
         case KC_D: case KC_P: case KC_B: case KC_O: case KC_QUOT:
         case KC_SCLN: case KC_R: case KC_E: case KC_M: case KC_L:
         case KC_K: case KC_J: case KC_S: case KC_U:
-        case LT(13, KC_F19):  // DUAL_FUNC_1 = v
+        case DUAL_FUNC_1:
         case KC_RBRC: case KC_C:
-        case LT(11, KC_O):    // DUAL_FUNC_0 = x
+        case DUAL_FUNC_0:
         case KC_X: case KC_LBRC:
-        case LT(2,  KC_U):    // DUAL_FUNC_2 = z
+        case DUAL_FUNC_2:
         case BP_ECUT: case BP_EGRV: case BP_AGRV:
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
