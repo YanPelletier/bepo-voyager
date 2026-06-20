@@ -664,30 +664,26 @@ static uint16_t dual_pending_keycode = 0;
 
 static uint16_t dual_func_letter(uint16_t keycode) {
     switch (keycode) {
-        case LT(5,  KC_F6): return BP_X;   // DUAL_FUNC_0
-        case LT(14, KC_F8): return BP_V;   // DUAL_FUNC_1
-        case LT(10, KC_R):  return BP_Z;   // DUAL_FUNC_2
-        case LT(8,  KC_F6): return BP_C;   // DUAL_FUNC_3
-        default:            return 0;
+        case LT(11, KC_O):   return BP_X;   // DUAL_FUNC_0 = x
+        case LT(13, KC_F19): return BP_V;   // DUAL_FUNC_1 = v
+        case LT(2,  KC_U):   return BP_Z;   // DUAL_FUNC_2 = z
+        case LT(8,  KC_F22): return BP_C;   // DUAL_FUNC_3 = c
+        default:             return 0;
     }
 }
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint16_t letter = dual_func_letter(keycode);
     if (letter == 0) return true;
-
-    if (!is_caps_word_on()) return true;  // Caps Word inactif : comportement normal
-
+    if (!is_caps_word_on()) return true;
     if (record->event.pressed) {
-        // Envoyer directement la majuscule, bloquer tout le pipeline ZSA
         tap_code16(S(letter));
         dual_pending_keycode = keycode;
-        return false;  // ZSA ne voit jamais le press
+        return false;
     } else {
-        // Release : bloquer aussi si c'est notre touche
         if (dual_pending_keycode == keycode) {
             dual_pending_keycode = 0;
-            return false;  // ZSA ne voit jamais le release non plus
+            return false;
         }
         return true;
     }
@@ -696,17 +692,22 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         case KC_A: case KC_Q: case KC_H:
-        case LT(8,  KC_F6):
-        case KC_I:          case KC_F:    case KC_SLSH:        case KC_COMM: case KC_DOT:
-        case KC_D:          case KC_P:    case KC_B:           case KC_O:    case KC_QUOT:
-        case KC_SCLN:       case KC_R:    case KC_E:           case KC_M:    case KC_L:
-        case KC_K:          case KC_J:    case KC_S:           case KC_U:    case LT(14, KC_F8):      
-        case KC_RBRC:       case KC_C:    case LT(5,  KC_F6):  case KC_X:    case KC_LBRC:
-        case LT(10, KC_R):  case BP_ECUT: case BP_EGRV:        case BP_AGRV:
+        case LT(8,  KC_F22):  // DUAL_FUNC_3 = c
+        case KC_I: case KC_F: case KC_SLSH: case KC_COMM: case KC_DOT:
+        case KC_D: case KC_P: case KC_B: case KC_O: case KC_QUOT:
+        case KC_SCLN: case KC_R: case KC_E: case KC_M: case KC_L:
+        case KC_K: case KC_J: case KC_S: case KC_U:
+        case LT(13, KC_F19):  // DUAL_FUNC_1 = v
+        case KC_RBRC: case KC_C:
+        case LT(11, KC_O):    // DUAL_FUNC_0 = x
+        case KC_X: case KC_LBRC:
+        case LT(2,  KC_U):    // DUAL_FUNC_2 = z
+        case BP_ECUT: case BP_EGRV: case BP_AGRV:
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
         case KC_BSPC: case KC_DEL:
+        case BP_DCRC:
         case S(KC_0): case S(KC_1): case S(KC_2): case S(KC_3):
         case S(KC_4): case S(KC_5): case S(KC_6): case S(KC_7):
         case S(KC_8): case S(KC_9):
