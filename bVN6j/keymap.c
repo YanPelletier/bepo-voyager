@@ -704,12 +704,16 @@ bool caps_word_press_user(uint16_t keycode) {
         case DUAL_FUNC_0:
         case KC_X: case KC_LBRC:
         case DUAL_FUNC_2:
-        case BP_ECUT: case BP_EGRV: case BP_AGRV:
+        // Accentuées avec majuscule directe
+        case BP_ECUT:   // é → É
+        case BP_EGRV:   // è → È
+        case BP_AGRV:   // à → À
+        case BP_CCED:   // ç → Ç
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
         case KC_BSPC: case KC_DEL:
-        case BP_DCRC:
+        case BP_DCRC:   // ^ mort — Caps Word reste actif pour â ê î ô û
         case S(KC_0): case S(KC_1): case S(KC_2): case S(KC_3):
         case S(KC_4): case S(KC_5): case S(KC_6): case S(KC_7):
         case S(KC_8): case S(KC_9):
