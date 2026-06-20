@@ -27,20 +27,20 @@ enum tap_dance_codes {
   DANCE_11,
 };
 
-#define DUAL_FUNC_0 LT(11, KC_O)
-#define DUAL_FUNC_1 LT(13, KC_F19)
-#define DUAL_FUNC_2 LT(2, KC_U)
-#define DUAL_FUNC_3 LT(8, KC_F22)
-#define DUAL_FUNC_4 LT(1, KC_F22)
-#define DUAL_FUNC_5 LT(5, KC_2)
-#define DUAL_FUNC_6 LT(4, KC_F8)
+#define DUAL_FUNC_0 LT(8, KC_F9)
+#define DUAL_FUNC_1 LT(14, KC_0)
+#define DUAL_FUNC_2 LT(7, KC_F6)
+#define DUAL_FUNC_3 LT(4, KC_W)
+#define DUAL_FUNC_4 LT(3, KC_G)
+#define DUAL_FUNC_5 LT(9, KC_0)
+#define DUAL_FUNC_6 LT(7, KC_4)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_voyager(
     KC_NO,          KC_NO,          TD(DANCE_0),    KC_NO,          KC_NO,          TD(DANCE_1),                                    TD(DANCE_2),    TD(DANCE_3),    KC_NO,          KC_NO,          KC_NO,          KC_NO,          
     KC_TAB,         BP_B,           BP_ECUT,        BP_P,           BP_O,           BP_EGRV,                                        BP_DCRC,        DUAL_FUNC_1,    BP_D,           BP_L,           BP_J,           DUAL_FUNC_2,    
     BP_CCED,        MT(MOD_LGUI, BP_A),MT(MOD_LALT, BP_U),MT(MOD_LCTL, BP_I),MT(MOD_LSFT, BP_E),BP_COMM,                                        DUAL_FUNC_3,    MT(MOD_RSFT, BP_T),MT(MOD_RCTL, BP_S),MT(MOD_LALT, BP_R),MT(MOD_RGUI, BP_N),BP_M,           
-    LT(4, KC_ESCAPE),LT(3, BP_AGRV), BP_Y,           DUAL_FUNC_0,    MEH_T(BP_DOT),  BP_K,                                           BP_APOS,        MEH_T(BP_Q),    BP_G,           BP_H,           LT(3, BP_F),    LT(7, BP_W),    
+    MEH_T(KC_ESCAPE),LT(3, BP_AGRV), BP_Y,           DUAL_FUNC_0,    LT(4, BP_DOT),  BP_K,                                           BP_APOS,        MEH_T(BP_Q),    BP_G,           BP_H,           LT(3, BP_F),    LT(7, BP_W),    
                                                     MT(MOD_RALT, KC_BSPC),LT(1, KC_ENTER),                                LT(1, KC_DELETE),MT(MOD_RALT, KC_SPACE)
   ),
   [1] = LAYOUT_voyager(
