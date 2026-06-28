@@ -494,3 +494,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   return true;
 }
+
+//Début des personalisations
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case TD(DANCE_1):
+        case TD(DANCE_3):
+        case TD(DANCE_4):
+        case TD(DANCE_5):
+            return 280;
+        default:
+            return TAPPING_TERM;
+    }
+}
